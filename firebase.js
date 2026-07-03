@@ -347,6 +347,8 @@ document.getElementById("user-search-input").addEventListener("input", (e) => {
 
 async function loadTabItems() {
 
+    console.log("loadTabItems()", currentTab, Date.now());
+
     const listContainer = document.getElementById("list-render-container");
 
     listContainer.innerHTML = "";

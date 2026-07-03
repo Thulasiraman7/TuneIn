@@ -489,3 +489,49 @@ border-radius:50%;
 width:22px;
 height:22px;
 }
+
+/* =========================
+   Mobile Header Fix
+========================= */
+
+@media (max-width: 768px) {
+
+.header{
+
+    grid-template-columns:auto 1fr auto auto;
+
+    gap:8px;
+
+    padding:10px;
+
+    font-size:20px;
+
+}
+
+.search-bar input{
+
+    width:100%;
+
+    font-size:13px;
+
+}
+
+.tune-in-button{
+
+    left:0;
+
+    padding:8px 12px;
+
+    font-size:12px;
+
+    white-space:nowrap;
+
+}
+
+.profile-icon{
+
+    margin-left:0;
+
+}
+
+}

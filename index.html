@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+
+<link rel="icon" href="data:,">
+
+<link rel="stylesheet" href="style.css">
+<script type="module" src="firebase.js"></script>
+<script type="module" src="script.js"></script>
+
+<title>Just Listen</title>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<div>Just Listen</div>
+
+<div class="search-bar">
+<input type="text" id="searchInput" placeholder="SEARCH SONGS">
+</div>
+<div class="header-column">
+    <div class="tune-in-button" id="tuneInMainBtn">Tune In</div>
+  </div>
+<div class="profile-icon" id="profileBtn">
+  <img id="topProfileImg" src="" alt="">
+
+<div id="defaultAvatar">
+<svg viewBox="0 0 24 24" fill="none">
+<path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="#bdbdbd"/>
+<path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#bdbdbd"/>
+</svg>
+</div>
+</div>
+</div>
+
+<div class="profile-popup" id="profilePopup">
+<div class="signin-only" id="signinOnly">
+  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+       style="width:18px; vertical-align:middle; margin-right:8px;">
+  Sign In
+</div>
+ <!-- ONLY FOR LOGGED IN -->
+  <div class="user-only" id="userOnly" style="display:none;">
+
+   <img class="popup-profile" id="popupProfile" src="">
+
+    <div class="popup-mail" id="userMail">email@gmail.com</div>
+
+    <div class="popup-name" id="userName">User Name</div>
+
+    <div class="popup-item" id="openSaved">Saved Songs</div>
+    
+    <div class="popup-item" id="signOutBtn">Sign out</div>
+
+  </div>
+
+</div>
+
+<div class="main-layout">
+
+<div class="left-panel">
+<div id="savedHeader" style="display:none; padding:10px 0; color:white;">
+  <div style="display:flex; align-items:center; gap:10px;">
+    <div id="backFromSaved" style="font-size:22px; cursor:pointer;">←</div>
+    <div style="font-size:18px; font-weight:600;">Saved Songs</div>
+  </div>
+</div>
+<div id="songList"></div>
+</div>
+
+</div>
+
+<!-- MINI PLAYER -->
+
+<div class="footer">
+
+<div class="mini-progress">
+<div id="miniProgress"></div>
+</div>
+
+<img id="footerCover">
+
+<div class="info" id="openFull">
+<div id="footerTitle"></div>
+<div id="footerArtist"></div>
+</div>
+
+<div class="controls">
+<button onclick="prevSong()">⏮</button>
+<button onclick="togglePlay()" id="playBtn">▶</button>
+<button onclick="nextSong()">⏭</button>
+<button id="saveBtn">⟡</button>
+</div>
+
+</div>
+
+<!-- FULL PLAYER -->
+
+<div class="full-player" id="fullPlayer">
+
+<div class="close" onclick="closePlayer()">←</div>
+
+<div class="cover-wrap">
+<img id="coverBg">
+<img id="fullCover">
+</div>
+
+<div id="fullTitle"></div>
+<div id="fullArtist"></div>
+
+<div class="progress-container" id="progressContainer">
+<div class="progress" id="progress"></div>
+<div class="hover-time" id="hoverTime">0:00</div>
+</div>
+
+<div class="time">
+<span id="currentTime">0:00</span>
+<span id="duration">0:00</span>
+</div>
+
+<div class="full-controls">
+<button id="fullSaveBtn">⟡</button>
+<button onclick="prevSong()">⏮</button>
+<button onclick="togglePlay()" id="fullPlayBtn">▶</button>
+<button onclick="nextSong()">⏭</button>
+<button id="fullLoopBtn">↺</button>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<audio id="audio"></audio>
+
+<!-- FULL PAGE TUNED IN SCREEN OVERLAY -->
+<div id="tunedInModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; z-index: 10000; flex-direction: column; font-family: sans-serif; box-sizing: border-box; color: white;">
+  
+  <!-- Header Navigation Strip -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; border-bottom: 1px solid #292929; background: #1a1a1a;">
+    <h3 style="margin: 0; font-size: 22px; font-weight: bold; letter-spacing: 0.5px;">Tuned In Network</h3>
+    <button id="closeModalBtn" style="background: none; border: none; font-size: 26px; cursor: pointer; color: #b3b3b3; font-weight: bold; transition: color 0.2s;">✕</button>
+  </div>
+
+  <!-- Main Content Wrapper (Centered and neat on big screens) -->
+  <div style="width: 100%; max-width: 550px; margin: 0 auto; padding: 25px; flex: 1; display: flex; flex-direction: column; box-sizing: border-box;">
+    
+    <!-- Big Search Input Bar Area -->
+    <div style="margin-bottom: 25px;">
+      <input type="text" id="user-search-input" placeholder="Search names or emails..." style="width: 100%; padding: 15px; border: 1px solid #3a3a3a; border-radius: 12px; font-size: 16px; box-sizing: border-box; background: #242424; color: white; outline: none; transition: border-color 0.2s;">
+    </div>
+
+    <!-- The 3 Navigation Tabs (Friends, Received, Sent) -->
+    <div style="display: flex; margin-bottom: 20px; border-bottom: 2px solid #292929;">
+      <button class="tab-btn active" data-tab="friends" style="flex: 1; padding: 12px; background: none; border: none; cursor: pointer; font-size: 16px; font-weight: bold; color: #007bff; border-bottom: 3px solid #007bff; outline: none;">Friends</button>
+      <button class="tab-btn" data-tab="received" style="flex: 1; padding: 12px; background: none; border: none; cursor: pointer; font-size: 16px; color: #8e8e8e; outline: none;">Received</button>
+      <button class="tab-btn" data-tab="sent" style="flex: 1; padding: 12px; background: none; border: none; cursor: pointer; font-size: 16px; color: #8e8e8e; outline: none;">Sent</button>
+    </div>
+
+    <!-- Dynamic User Search & Request Profile List Output Frame Block -->
+    <div id="list-render-container" style="flex: 1; overflow-y: auto; padding-right: 5px;">
+      <!-- JavaScript will inject matched user rows here dynamically -->
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

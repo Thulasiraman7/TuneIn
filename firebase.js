@@ -387,10 +387,7 @@ async function loadTabItems() {
 
     listContainer.innerHTML = "";
 
-    console.log("Current tab:", currentTab);
-console.log("IDs:", ids);
-
-ids.forEach(uid => {
+   ids.forEach(uid => {
 
         if (!allUsers[uid]) return;
 

@@ -345,19 +345,28 @@ document.getElementById("user-search-input").addEventListener("input", (e) => {
 // Load Friends / Sent / Received Tabs
 // =======================================================
 
+let loadingTab = false;
+
 async function loadTabItems() {
 
-    console.trace("loadTabItems()", currentTab, Date.now());
+    if (loadingTab) return;
+
+    loadingTab = true;
 
     const listContainer = document.getElementById("list-render-container");
-
     listContainer.innerHTML = "";
 
-    if (!window.currentUser) return;
+    if (!window.currentUser) {
+        loadingTab = false;
+        return;
+    }
 
     const myData = await getMyData();
 
-    if (!myData) return;
+    if (!myData) {
+        loadingTab = false;
+        return;
+    }
 
     const allUsers = await getAllUsers();
 
@@ -376,26 +385,24 @@ async function loadTabItems() {
         ids = Object.keys(myData.receivedRequests || {});
     }
 
+    listContainer.innerHTML = "";
+
     ids.forEach(uid => {
 
         if (!allUsers[uid]) return;
 
         renderUserRow(
-
             uid,
-
             allUsers[uid],
-
             getRelationship(myData, uid),
-
             false
-
         );
 
     });
 
-}
+    loadingTab = false;
 
+}
 // =======================================================
 // Handle Tune In Actions
 // =======================================================
@@ -473,8 +480,8 @@ async function handleAction(action, targetUid) {
 
     }
 
-    await set(myRef, me);
-    await set(targetRef, target);
+    await update(myRef, me);
+    await update(targetRef, target);
 
     // Refresh current screen instantly
 
